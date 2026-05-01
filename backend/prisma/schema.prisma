@@ -13,12 +13,13 @@ datasource db {
 }
 
 model User {
-  userId String  @id @default(uuid())
-  email  String  @unique
-  name   String?
+  userId   String  @id @default(uuid())
+  email    String  @unique
+  password String
+  name     String?
 
-  bidder    Bidder?
-  auctioner Auctioneer?
+  bidder     Bidder?
+  auctioneer Auctioneer?
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
@@ -46,24 +47,14 @@ model BidderAuction {
 }
 
 model Auctioneer {
-  auctionerId String @id @default(uuid())
+  auctioneerId String @id @default(uuid())
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [userId])
 
-  updatedAt          DateTime            @updatedAt
-  createdAt          DateTime            @default(now())
-  auctioneerAuctions AuctioneerAuction[]
-}
-
-model AuctioneerAuction {
-  auctioneerId String
-  auctionId    String
-
-  auctioneer Auctioneer @relation(fields: [auctioneerId], references: [auctionerId])
-  auction    Auction    @relation(fields: [auctionId], references: [auctionId])
-
-  @@id([auctioneerId, auctionId])
+  updatedAt          DateTime  @updatedAt
+  createdAt          DateTime  @default(now())
+  auctioneerAuctions Auction[]
 }
 
 model Auction {
@@ -71,12 +62,13 @@ model Auction {
   title       String
   description String?
 
-  items Item[]
+  auctioneerId String
+  auctioneer   Auctioneer @relation(fields: [auctioneerId], references: [auctioneerId])
+  items        Item[]
 
-  updatedAt          DateTime            @updatedAt
-  createdAt          DateTime            @default(now())
-  bidderAuctions     BidderAuction[]
-  auctioneerAuctions AuctioneerAuction[]
+  updatedAt      DateTime        @updatedAt
+  createdAt      DateTime        @default(now())
+  bidderAuctions BidderAuction[]
 }
 
 model Item {
@@ -85,7 +77,7 @@ model Item {
   description String?
 
   minBid     Float
-  currentBid Float?
+  currentBid Float   @default(0)
   isSold     Boolean @default(false)
 
   auctionId String

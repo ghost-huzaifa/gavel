@@ -1,0 +1,43 @@
+@baseUrl = http://localhost:3000/api/v1
+@auctioneerId = <REPLACE_WITH_AUCTIONEER_ID>
+@auctionId = <REPLACE_WITH_AUCTION_ID>
+@bidderId = <REPLACE_WITH_BIDDER_ID>
+
+GET {{baseUrl}}/auctions
+
+### Create a new Auction
+POST {{baseUrl}}/auctions
+Content-Type: application/json
+
+{
+  "title": "Vintage Electronics",
+  "description": "A collection of 80s and 90s retro tech.",
+  "auctioneerId": "{{auctioneerId}}"
+}
+
+### Create Items for an Auction
+POST {{baseUrl}}/auctions/{{auctionId}}/items
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "name": "Sony Walkman",
+      "description": "Original Walkman in mint condition",
+      "minBid": 50.0
+    },
+    {
+      "name": "Nintendo GameBoy",
+      "description": "With original Tetris cartridge",
+      "minBid": 100.0
+    }
+  ]
+}
+
+### Add a Bidder to an Auction
+POST {{baseUrl}}/auctions/{{auctionId}}/add-bidder
+Content-Type: application/json
+
+{
+  "bidderId": "{{bidderId}}"
+}
