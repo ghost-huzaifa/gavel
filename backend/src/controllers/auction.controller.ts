@@ -90,10 +90,9 @@ async function assertAuction(res: any, auctionId: string) {
 export const getAuctions = async (req, res) => {
   const auctions = await prisma.auction.findMany({
     include: {
-      include: {
-        user: true,
-      },
       items: true,
+      bidders: true,
+      auctioneer: true,
     },
   });
 
