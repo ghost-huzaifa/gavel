@@ -28,7 +28,7 @@ export default function Dashboard() {
                         Authorization: token
                     }
                 })
-                setAuctions(res)
+                setAuctions(res.data)
                 console.log(auctions)
             }
             catch (error) {
@@ -51,7 +51,7 @@ export default function Dashboard() {
             <div>I am {user?.email || "not signed in"}</div>
             {<button onClick={clearAuth}> Goto Auth</button>}
             {user && <div>
-                {auctions}
+                {JSON.stringify(auctions)}
 
             </div>}
         </div>
