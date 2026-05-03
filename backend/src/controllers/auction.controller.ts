@@ -1,11 +1,11 @@
 import { prisma } from "../lib/prisma";
 
 // POST
-export const createAuction = async (req, res) => {
+export const createAuction = async (req: any, res: any) => {
   const { title, description, auctioneerId } = req.body;
 
-  const auctioneer = await prisma.auctioneer.findUnique({
-    where: { auctioneerId },
+  const auctioneer = await prisma.user.findUnique({
+    where: { userId: auctioneerId },
   });
 
   if (!auctioneer) {
@@ -44,26 +44,30 @@ export const createItemsForAuction = async (req, res) => {
 
 export const addBidderToAuction = async (req, res) => {
   const { auctionId } = req.params;
-  const { bidderId } = req.body;
+  const { userId } = req.body;
 
   const auction = await assertAuction(res, auctionId);
   if (!auction) return;
 
-  const bidder = await prisma.bidder.findUnique({
-    where: { bidderId },
+  const bidder = await prisma.user.findUnique({
+    where: { userId },
   });
 
   if (!bidder) {
     return res.status(404).json({ error: "Bidder not found" });
   }
-
-  await prisma.bidderAuction.create({
-    data: {
-      bidderId,
+  await prisma.auction.update({
+    where: {
       auctionId,
     },
+    data: {
+      bidders: {
+        connect: {
+          userId,
+        },
+      },
+    },
   });
-
   return res
     .status(200)
     .json({ message: "Bidder added to auction successfully" });
@@ -86,10 +90,8 @@ async function assertAuction(res: any, auctionId: string) {
 export const getAuctions = async (req, res) => {
   const auctions = await prisma.auction.findMany({
     include: {
-      auctioneer: {
-        include: {
-          user: true,
-        },
+      include: {
+        user: true,
       },
       items: true,
     },

@@ -9,8 +9,8 @@ import {
 const router = Router();
 
 router.post("/", createAuction);
-router.get("/", getAuctions);
 router.post("/:auctionId/items", createItemsForAuction);
 router.post("/:auctionId/add-bidder", addBidderToAuction);
+router.get("/", getAuctions);
 
 export default router;
